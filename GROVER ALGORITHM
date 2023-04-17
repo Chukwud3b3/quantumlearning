@@ -1,0 +1,38 @@
+from qiskit import *
+%matplotlib inline
+GroverCircuit = QuantumCircuit(2,2)
+
+GroverCircuit.h(0)
+GroverCircuit.h(1)
+
+GroverCircuit.barrier()
+
+#ORACLE CIRCUIT
+GroverCircuit.cz(0,1)
+
+GroverCircuit.barrier()
+
+#REFLECTION CIRCUIT
+GroverCircuit.h(0)
+GroverCircuit.h(1)
+GroverCircuit.z(0)
+GroverCircuit.z(1)
+GroverCircuit.cz(0,1)
+GroverCircuit.h(0)
+GroverCircuit.h(1)
+
+GroverCircuit.barrier()
+
+#CIRCUIT MEASUREMENT
+GroverCircuit.measure(0,0)
+GroverCircuit.measure(1,1)
+
+GroverCircuit.draw(output = "mpl")#circuit visualization tool
+simulator = Aer.get_backend('qasm_simulator')
+result = execute(GroverCircuit, backend = simulator, shots = 100).result() #execute the circuit on qasm simulator, with a total of 100 shots
+counts = result.get_counts()
+print(counts)# prints the result of the circuit execution
+
+
+from qiskit.visualization import plot_histogram
+plot_histogram(result.get_counts(GroverCircuit))

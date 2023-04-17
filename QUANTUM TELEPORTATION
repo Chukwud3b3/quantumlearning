@@ -1,0 +1,33 @@
+from qiskit import *
+%matplotlib inline
+from qiskit.visualization import plot_histogram
+
+QTCircuit = QuantumCircuit(3,3)
+QTCircuit.x(0) #we are teleporting quantum state 1 in this scenario, else this command is negligible
+
+QTCircuit.barrier()
+
+QTCircuit.h(1)#applying hadamard gate to q1
+QTCircuit.cx(1,2) #entagling quantum bits 1 and 2
+
+QTCircuit.barrier()
+
+QTCircuit.cx(0,1)# applying controlled x gate between q0 and q1
+QTCircuit.h(0)# appling hadamard gate to q0
+
+QTCircuit.barrier()
+
+QTCircuit.measure(0,0)#measuring q0 using classical register 0
+QTCircuit.measure(1,1)#measuring q1 using classical register 1
+
+QTCircuit.barrier()
+
+QTCircuit.cx(1,2)# applying controlled x gate to q1 and q2
+QTCircuit.cz(0,2)# applying controlled z gate to q0 and q2
+QTCircuit.measure(2,2)# measuring q2 using the classical register 2
+
+QTCircuit.draw(output = 'mpl')# visualizing the designed quantum circuit
+
+simulator = Aer.get_backend('qasm_simulator')
+answer = execute(QTCircuit, backend = simulator, shots = 1024).result() #execute the circuit on qasm simulator, with a total of 1024 shots
+plot_histogram(answer.get_counts(QTCircuit))

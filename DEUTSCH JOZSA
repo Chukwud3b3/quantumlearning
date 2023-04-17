@@ -1,0 +1,26 @@
+from qiskit import *
+from numpy import pi
+%matplotlib
+djcirc = QuantumCircuit(3,2)
+djcirc.draw(output = "mpl")#circuit visualization
+djcirc.x(2)
+djcirc.barrier()
+djcirc.h(1)
+djcirc.h(2)
+djcirc.h(0)
+djcirc.barrier()
+djcirc.cx(0,2)
+djcirc.cx(1,2)
+djcirc.barrier()
+djcirc.h(0)
+djcirc.h(1)
+djcirc.h(2)
+djcirc.measure(0,0)
+djcirc.measure(1,1)
+djcirc.draw(output = "mpl")#circuit visualization
+simulator = Aer.get_backend('qasm_simulator')
+result = execute(djcirc, backend = simulator, shots = 1024).result() 
+counts = result.get_counts()
+print(counts)
+from qiskit.visualization import plot_histogram
+plot_histogram(result.get_counts(djcirc))
